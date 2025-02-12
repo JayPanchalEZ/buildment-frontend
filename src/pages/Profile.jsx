@@ -47,7 +47,7 @@ function Profile({ setDarkMode, darkMode }) {
           <div className="text-center">
             <div className="relative inline-block">
               <img
-                src="https://lh3.googleusercontent.com/a/ACg8ocLTBkKJXwvdLZRbyJEjJ_GMhV1_iW977hl7AAXaXC7l0HsXzcND=s96-c"
+                src={userProfile.picture}
                 alt={userProfile.name}
                 className="mx-auto h-32 w-32 rounded-full object-cover border border-gray-300 dark:border-gray-700"
               />
