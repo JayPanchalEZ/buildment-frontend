@@ -42,7 +42,8 @@ function Login({ setIsAuthenticated, setUser }) {
         } else {
           console.error("setIsAuthenticated is not a function");
         }
-
+        // Set the user's authentication status in local storage
+        localStorage.setItem("isAuthenticated", "true");
         localStorage.setItem("user", JSON.stringify(data));
 
         navigate("/dashboard"); // Redirect to dashboard after login
@@ -64,17 +65,17 @@ function Login({ setIsAuthenticated, setUser }) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="max-w-md w-full space-y-8"
       >
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
             Sign in to BuildMend
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
+          <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-300">
             Your trusted home repair assistant
           </p>
         </div>
@@ -86,9 +87,9 @@ function Login({ setIsAuthenticated, setUser }) {
               type="checkbox"
               checked={acceptedPrivacy}
               onChange={(e) => setAcceptedPrivacy(e.target.checked)}
-              className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+              className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600"
             />
-            <label htmlFor="privacy-policy" className="ml-2 block text-sm text-gray-900">
+            <label htmlFor="privacy-policy" className="ml-2 block text-sm text-gray-900 dark:text-gray-300">
               I accept the{" "}
               <a href="/privacy-policy" className="text-blue-600 underline">
                 Privacy Policy

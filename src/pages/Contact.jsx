@@ -14,72 +14,85 @@ function Contact() {
   };
 
   return (
-    <div className="pt-16 min-h-screen bg-gray-50">
-      <div className="max-w-6xl mx-auto px-6 py-12">
+    <div className="pt-16 min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="max-w-7xl mx-auto px-6 py-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-10 bg-white p-8 rounded-lg shadow-md"
+          className="grid grid-cols-1 md:grid-cols-2 gap-12 bg-white dark:bg-gray-800 p-10 rounded-xl shadow-lg"
         >
           <div>
-            <h2 className="text-3xl font-bold mb-6 text-primary-700">Contact Us</h2>
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <h2 className="text-4xl font-bold mb-8 text-primary-700 dark:text-primary-500">Contact Us</h2>
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
+                <label htmlFor="name" className="block text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">Name</label>
                 <input
                   type="text"
                   name="name"
                   id="name"
                   value={formData.name}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
+                  className="mt-1 block w-full rounded-lg border-2 border-gray-300 px-4 py-3 text-lg shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white transition duration-200"
+                  placeholder="Enter your name"
                 />
               </div>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+                <label htmlFor="email" className="block text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
                 <input
                   type="email"
                   name="email"
                   id="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
+                  className="mt-1 block w-full rounded-lg border-2 border-gray-300 px-4 py-3 text-lg shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white transition duration-200"
+                  placeholder="Enter your email"
                 />
               </div>
               <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-700">Message</label>
+                <label htmlFor="message" className="block text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">Message</label>
                 <textarea
                   name="message"
                   id="message"
-                  rows={4}
+                  rows={6}
                   value={formData.message}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
+                  className="mt-1 block w-full rounded-lg border-2 border-gray-300 px-4 py-3 text-lg shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white transition duration-200"
+                  placeholder="Type your message here..."
                 />
               </div>
               <button
                 type="submit"
-                className="w-full bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors"
+                className="w-full bg-primary-600 text-white px-6 py-4 text-lg font-semibold rounded-lg hover:bg-primary-700 transform hover:scale-[1.02] transition-all duration-200 dark:bg-primary-500 dark:hover:bg-primary-400"
               >
                 Send Message
               </button>
             </form>
           </div>
-          <div>
-            <h2 className="text-3xl font-bold mb-6 text-primary-700">About BuildMend</h2>
-            <p className="text-gray-600 mb-4">
-              BuildMend is your trusted partner in home repairs and maintenance, combining AI technology with a network of skilled professionals to provide top-notch solutions.
-            </p>
-            <p className="text-gray-600 mb-4">
-              We connect you with expert advice and reliable professionals, ensuring that your home repairs are handled efficiently and effectively.
-            </p>
-            <div className="mt-6">
-              <h3 className="text-xl font-semibold mb-4 text-primary-700">Our Office</h3>
-              <p className="text-gray-600">123 Repair Street</p>
-              <p className="text-gray-600">Building Fix, Suite 100</p>
-              <p className="text-gray-600">Maintenance City, MC 12345</p>
-              <p className="text-gray-600 mt-2">Email: support@buildmend.com</p>
-              <p className="text-gray-600">Phone: (555) 123-4567</p>
+          <div className="space-y-8">
+            <div>
+              <h2 className="text-4xl font-bold mb-6 text-primary-700 dark:text-primary-500">About BuildMend</h2>
+              <p className="text-lg text-gray-600 mb-6 dark:text-gray-400 leading-relaxed">
+                BuildMend is your trusted partner in home repairs and maintenance, combining AI technology with a network of skilled professionals to provide top-notch solutions.
+              </p>
+              <p className="text-lg text-gray-600 mb-6 dark:text-gray-400 leading-relaxed">
+                We connect you with expert advice and reliable professionals, ensuring that your home repairs are handled efficiently and effectively.
+              </p>
+            </div>
+            <div className="bg-gray-50 dark:bg-gray-700 p-8 rounded-xl">
+              <h3 className="text-2xl font-bold mb-6 text-primary-700 dark:text-primary-500">Our Office</h3>
+              <div className="space-y-3 text-lg">
+                <p className="text-gray-600 dark:text-gray-300">Dhyaan Bhavan ke saamne.</p>
+                <p className="text-gray-600 dark:text-gray-300">Tagore Bhavan, A Hostel Room No. 315</p>
+                <p className="text-gray-600 dark:text-gray-300">Parul City, BC 2383</p>
+                <div className="pt-4">
+                  <p className="text-gray-600 dark:text-gray-300 flex items-center">
+                    <span className="font-semibold mr-2">Email:</span> support@buildmend.com
+                  </p>
+                  <p className="text-gray-600 dark:text-gray-300 flex items-center">
+                    <span className="font-semibold mr-2">Phone:</span> 7879963325
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </motion.div>
