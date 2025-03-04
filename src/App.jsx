@@ -14,6 +14,7 @@ import Profile from "./pages/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
+
 // Remove dotenv import as it's not needed with Vite
 // Environment variables in Vite are accessed via import.meta.env
 
@@ -23,10 +24,18 @@ function App() {
     return storedAuth === "true";
   });
 
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
+
   const [darkMode, setDarkMode] = useState(() => {
     const storedDarkMode = localStorage.getItem("darkMode");
     return storedDarkMode === "true";
   });
+
+  const apiKey = import.meta.env.VITE_GOOGLE_CLIENT_ID
+
 
   useEffect(() => {
     localStorage.setItem("darkMode", darkMode);
@@ -37,10 +46,10 @@ function App() {
     }
   }, [darkMode]);
 
-  // Remove duplicate useEffect as the first one handles both initial and subsequent changes
+
 
   return (
-    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+    <GoogleOAuthProvider clientId={apiKey}>
       <Router>
         <div className={`flex h-screen bg-gray-50 ${darkMode ? 'dark:bg-gray-900' : ''}`}>
           {isAuthenticated && (
@@ -54,7 +63,7 @@ function App() {
                 <Route
                   path="/login"
                   element={
-                    <Login setIsAuthenticated={setIsAuthenticated} />
+                    <Login setIsAuthenticated={setIsAuthenticated} setUser={setUser} />
                   }
                 />
                 <Route

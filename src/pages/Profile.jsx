@@ -10,26 +10,31 @@ function Profile({ setDarkMode, darkMode }) {
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     if (!storedUser) {
-      navigate("/login"); // Redirect to login if no user data found
+      navigate("/login");
     } else {
-      setUserProfile(storedUser);
+      setUserProfile({
+        ...storedUser,
+        picture: storedUser.picture || "https://via.placeholder.com/150", // Default profile picture
+      });
     }
   }, [navigate]);
+
+
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setUserProfile((prev) => ({
-          ...prev,
-          picture: reader.result,
-        }));
-        localStorage.setItem("user", JSON.stringify({ ...userProfile, picture: reader.result })); // Save updated picture
+        const updatedProfile = { ...userProfile, picture: reader.result };
+        setUserProfile(updatedProfile);
+        localStorage.setItem("user", JSON.stringify(updatedProfile));
       };
       reader.readAsDataURL(file);
     }
   };
+
+  console.log(userProfile.picture)
 
   const toggleDarkMode = () => {
     setDarkMode((prev) => !prev);

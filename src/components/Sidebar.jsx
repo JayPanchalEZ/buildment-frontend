@@ -15,6 +15,8 @@ function Sidebar({ setIsAuthenticated }) {
   const navigate = useNavigate();
 
   const handleLogout = () => {
+    
+    
     localStorage.removeItem("user");
     localStorage.removeItem("isAuthenticated");
     setIsAuthenticated(false);

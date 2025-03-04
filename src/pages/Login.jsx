@@ -12,6 +12,7 @@ function Login({ setIsAuthenticated, setUser }) {
   // Handle Google login manually
   const loginWithGoogle = useGoogleLogin({
     onSuccess: async (response) => {
+      localStorage.removeItem("user");
       console.log("Google Login Response:", response);
 
       if (!response?.access_token) {
@@ -25,7 +26,7 @@ function Login({ setIsAuthenticated, setUser }) {
           headers: { Authorization: `Bearer ${response.access_token}` },
         });
 
-        console.log("User Info:", data);
+        // console.log("User Info:", data);
 
         if (typeof setUser === "function") {
           setUser({
