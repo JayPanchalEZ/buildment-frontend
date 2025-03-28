@@ -3,15 +3,17 @@ import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import ScrollableFeed from "react-scrollable-feed";
 import { FaPaperclip } from "react-icons/fa"; // Import attachment icon
+import axios from "axios"; // Import axios for API requests
 
 function AIChat() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
+  const [loading, setLoading] = useState(false); // Optional: Loading state
   const textareaRef = useRef(null);
   const fileInputRef = useRef(null);
 
-  const [professionals] = useState([
+  const [professionals, setProfessionals] = useState([
     { name: "Prem Panchal", specialty: "Plumber", contact: "9898123669" },
     { name: "Harshit Bhai", specialty: "Electrician", contact: "7114173314" },
     { name: "Johnny Bhaiya", specialty: "Carpenter", contact: "6933299522" },
@@ -34,19 +36,71 @@ function AIChat() {
     }
   };
 
-  const handleImageUpload = (e) => {
+  const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => {
+      reader.onloadend = async () => {
         setSelectedImage(reader.result);
         setMessages([...messages, { type: "user-image", content: reader.result }]);
+
+        const formData = new FormData();
+        formData.append("image", file);
+
+        setLoading(true);
+        try {
+          const response = await axios.post("http://localhost:8080/api/upload-image", formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+          });
+
+          console.log("Image Upload Response:", response.data);
+
+          const { solution, professionals: recommendedPros = [], detected_issue, confidence } = response.data;
+
+          // Transform the recommended professionals to match the professionals state structure
+          if (recommendedPros && Array.isArray(recommendedPros) && recommendedPros.length > 0) {
+            const transformedPros = recommendedPros.map((pro) => ({
+              name: pro.name || "Unknown",
+              specialty: pro.specialty || "Unknown",
+              contact: pro.contact || "N/A",
+            }));
+            console.log("Transformed professionals before setting:", transformedPros);
+            // Ensure transformedPros is a valid array before setting
+            if (Array.isArray(transformedPros)) {
+              setProfessionals(transformedPros);
+            } else {
+              console.error("Transformed professionals is not an array:", transformedPros);
+            }
+          } else {
+            console.warn("No valid professionals in response, keeping current list:", recommendedPros);
+          }
+
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            {
+              type: "ai",
+              content: {
+                detected_issue: detected_issue || "Unknown",
+                confidence: confidence || "N/A",
+                solution: solution || "No solution provided.",
+              },
+            },
+          ]);
+        } catch (error) {
+          console.error("Error uploading image:", error);
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            { type: "ai", content: { error: "Error: Could not process the image." } },
+          ]);
+        } finally {
+          setLoading(false);
+        }
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     if (e) e.preventDefault();
 
     const trimmedInput = input.trim();
@@ -54,6 +108,55 @@ function AIChat() {
 
     setMessages([...messages, { type: "user", content: trimmedInput }]);
     setInput("");
+
+    setLoading(true);
+    try {
+      const response = await axios.post("http://localhost:8080/api/solve-issue", {
+        text: trimmedInput,
+      });
+
+      console.log("Text Submit Response:", response.data);
+
+      const { solution, professionals: recommendedPros = [], detected_issue, confidence } = response.data;
+
+      // Transform the recommended professionals to match the professionals state structure
+      if (recommendedPros && Array.isArray(recommendedPros) && recommendedPros.length > 0) {
+        const transformedPros = recommendedPros.map((pro) => ({
+          name: pro.name || "Unknown",
+          specialty: pro.specialty || "Unknown",
+          contact: pro.contact || "N/A",
+        }));
+        console.log("Transformed professionals before setting:", transformedPros);
+        // Ensure transformedPros is a valid array before setting
+        if (Array.isArray(transformedPros)) {
+          setProfessionals(transformedPros);
+        } else {
+          console.error("Transformed professionals is not an array:", transformedPros);
+        }
+      } else {
+        console.warn("No valid professionals in response, keeping current list:", recommendedPros);
+      }
+
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        {
+          type: "ai",
+          content: {
+            detected_issue: detected_issue || "Unknown",
+            confidence: confidence || "N/A",
+            solution: solution || "No solution provided.",
+          },
+        },
+      ]);
+    } catch (error) {
+      console.error("Error sending message:", error);
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { type: "ai", content: { error: "Error: Could not process your request." } },
+      ]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -88,13 +191,46 @@ function AIChat() {
                             <img src={message.content} alt="Uploaded" className="w-full h-auto" />
                           </div>
                         ) : (
-                          <div className={`message ${message.type === "user" ? "bg-blue-100" : "bg-gray-200"}`}>
-                            {message.content}
+                          <div
+                            className={`message ${message.type === "user" ? "bg-blue-100" : "bg-gray-200"
+                              } ${message.type === "ai" ? "ai-message" : ""}`}
+                          >
+                            {message.type === "ai" ? (
+                              message.content.error ? (
+                                <p className="error">{message.content.error}</p>
+                              ) : (
+                                <div className="ai-response">
+                                  <div className="ai-section detected-issue">
+                                    <h4>Detected Issue</h4>
+                                    <p>
+                                      {message.content.detected_issue} (Confidence: {message.content.confidence})
+                                    </p>
+                                  </div>
+                                  <div className="ai-section solution">
+                                    <h4>Solution</h4>
+                                    <p>{message.content.solution}</p>
+                                  </div>
+                                  {/* <div className="ai-section professionals">
+                                    <h4>Recommended Professionals</h4>
+                                    <ul>
+                                      {message.content.professionals.map((pro, idx) => (
+                                        <li key={idx}>
+                                          {pro.name} ({pro.specialty}) - {pro.contact}
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div> */}
+                                </div>
+                              )
+                            ) : (
+                              message.content
+                            )}
                           </div>
                         )}
                       </motion.div>
                     ))
                   )}
+                  {loading && <p className="text-gray-500 text-center">Processing...</p>}
                 </div>
               </ScrollableFeed>
             </div>
@@ -130,6 +266,7 @@ function AIChat() {
               <button
                 type="submit"
                 className="bg-blue-600 text-white px-5 py-3 rounded-lg font-medium hover:bg-blue-700 transition dark:bg-blue-500 dark:hover:bg-blue-600"
+                disabled={loading}
               >
                 Send
               </button>

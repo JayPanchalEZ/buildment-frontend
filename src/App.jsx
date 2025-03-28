@@ -28,6 +28,37 @@ function App() {
     return storedDarkMode === "true";
   });
 
+  // Auto logout after 30 minutes of inactivity
+  useEffect(() => {
+    if (isAuthenticated) {
+      const logoutTimer = setTimeout(() => {
+        setIsAuthenticated(false);
+        localStorage.removeItem("isAuthenticated");
+      }, 30 * 60 * 1000); // 30 minutes in milliseconds
+
+      // Reset timer on user activity
+      const resetTimer = () => {
+        clearTimeout(logoutTimer);
+        const newTimer = setTimeout(() => {
+          setIsAuthenticated(false);
+          localStorage.removeItem("isAuthenticated");
+        }, 30 * 60 * 1000);
+        return newTimer;
+      };
+
+      // Add event listeners for user activity
+      window.addEventListener("mousemove", resetTimer);
+      window.addEventListener("keypress", resetTimer);
+
+      // Cleanup function
+      return () => {
+        clearTimeout(logoutTimer);
+        window.removeEventListener("mousemove", resetTimer);
+        window.removeEventListener("keypress", resetTimer);
+      };
+    }
+  }, [isAuthenticated]);
+
   useEffect(() => {
     localStorage.setItem("darkMode", darkMode);
     if (darkMode) {
@@ -37,10 +68,13 @@ function App() {
     }
   }, [darkMode]);
 
+
+  const apiKey = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
   // Remove duplicate useEffect as the first one handles both initial and subsequent changes
 
   return (
-    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+    <GoogleOAuthProvider clientId={apiKey}>
       <Router>
         <div className={`flex h-screen bg-gray-50 ${darkMode ? 'dark:bg-gray-900' : ''}`}>
           {isAuthenticated && (
