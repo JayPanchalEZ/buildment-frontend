@@ -36,5 +36,5 @@
     "tailwindcss": "^3.4.17",
     "vite": "^5.1.4"
   },
-  "proxy": "http://localhost:5000"
+  "proxy": "https://buildmend-backend.onrender.com"
 }

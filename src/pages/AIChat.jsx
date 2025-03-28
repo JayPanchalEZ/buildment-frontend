@@ -49,7 +49,7 @@ function AIChat() {
 
         setLoading(true);
         try {
-          const response = await axios.post("http://localhost:8080/api/upload-image", formData, {
+          const response = await axios.post("https://buildmend-backend.onrender.com/api/upload-image", formData, {
             headers: { "Content-Type": "multipart/form-data" },
           });
 
@@ -111,7 +111,7 @@ function AIChat() {
 
     setLoading(true);
     try {
-      const response = await axios.post("http://localhost:8080/api/solve-issue", {
+      const response = await axios.post("https://buildmend-backend.onrender.com/api/solve-issue", {
         text: trimmedInput,
       });
 
